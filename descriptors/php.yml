@@ -1,0 +1,14 @@
+expression_patterns:
+  language-tags: 
+    pattern: !ruby/regexp /(?<open>\<\?php)(?<body>[\w\W]*)(?<close>\?\>)/m 
+    format: "<?php{{body}}?>"
+  variables: 
+    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<property>.*?)(?<equal>\s=\s|=)(?<value>.*?)(?<endline>\;)/m
+    params: !ruby ["$", nil, "->", nil, "=", nil, ";"]
+  object-instantiation: 
+    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<equal>\s=\s|=)(?<instantiation>new MercadoPago\\)(?<class>.*?)(?<method>\(\))(?<endline>\;)/m
+    params: !ruby ["$"]
+  method-call: 
+    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<method>\w+)(?<params>\(\))(?<endline>\;)/m  
+    params: !ruby ["", nil, ""]
+    

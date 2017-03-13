@@ -1,0 +1,13 @@
+expression_patterns:
+  language-tags: 
+    pattern: !ruby/regexp /(?<body>[\w\W]*)/m 
+    format: "{{body}}"
+  variables: 
+    pattern: !ruby/regexp /(?<object>\w+)(?<caller>\.)(?<property>\w+)\s(?<equal>=|=)\s(?<value>[^\n\r]+)/m 
+    format: "{{object}}.{{property}} = {{value}}"
+  object-instantiation: 
+    pattern: !ruby/regexp /(?<variable_prefix>)(?<object>\w+)\s(?<equal>=|=)\s(?<instantiation>MercadoPago\:\:)(?<class>\w+)(?<method>.[new|\new\(\)]+)(?<endline>)/m 
+    format: "{{object}} = MercadoPago::{{class}}.new()"
+  method-call: 
+    pattern: !ruby/regexp /\n(?<variable_prefix>)(?<object>\w+)(?<caller>\.)(?<method>\w+)(\((?<params>.*?)\))(?<endline>)/m   
+    format: "{{object}}.{{method}}{{params}}"
