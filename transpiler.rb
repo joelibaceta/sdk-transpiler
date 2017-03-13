@@ -1,9 +1,11 @@
 require 'yaml'
 require 'pp'
 
-def translate(code: "", from: "", to: "")
-  origin = YAML.load_file("descriptors/#{from}.yml")
-  destiny = YAML.load_file("descriptors/#{to}.yml")
+def transpile(code: "", from: "", to: "")
+   
+  
+  origin = YAML.load_file("#{File.dirname(__FILE__)}/descriptors/#{from}.yml")
+  destiny = YAML.load_file("#{File.dirname(__FILE__)}/descriptors/#{to}.yml")
   
   origin["expression_patterns"].each do |key, expression| 
     #p expression["pattern"]
@@ -26,38 +28,4 @@ def translate(code: "", from: "", to: "")
   return code
 end
 
-
-def test()
-  code = '
-    <?php 
-    
-      $preference = new MercadoPago\Preference();
-      
-      $item = new MercadoPago\Item();
-      $item->title = "Multicolor kite";
-      $item->quantity = 1;
-      $item->currency_id = "ARS";
-      $item->unit_price = "10.00";
-      
-      $payer = new MercadoPago\Payer();
-      $payer->email = "usuario@mail.com";
-      
-      $preference->items = array($item);
-      $preference->payer = $payer;
-      
-      $preference->save();
-      
-    ?> '
-      
-  puts "To Ruby"
-  puts translate(code: code, from: "php", to: "ruby")
-  puts "To NodeJS"
-  puts translate(code: code, from: "php", to: "nodejs")
-  puts "To Java"
-  puts translate(code: code, from: "php", to: "java")
-
-  #translate(code: code, from: "php", to: "ruby")
   
-end
-
- test()
