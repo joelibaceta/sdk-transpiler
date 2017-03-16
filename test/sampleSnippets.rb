@@ -1,8 +1,8 @@
-@@languages_supported=["php", "nodejs", "ruby", "java"] #"python", "dotnet"
+@@languages_supported=["php", "nodejs", "ruby"] #"python", "dotnet", "java"
 
-@@samples = Hash.new;
+@@snippets = Hash.new;
 
-@@samples["basic_integration"]=Hash.new
+@@snippets["basic_integration"]=Hash.new
 
 code = '
   <?php 
@@ -22,10 +22,10 @@ code = '
     $preference->payer = $payer;
     
     $preference->save();
-    
-  ?> '
+
+  ?>'
   
-@@samples["basic_integration"]["php"] = code
+@@snippets["basic_integration"]["php"] = code
 
 code = ' 
     preference = MercadoPago::Preference.new()
@@ -36,15 +36,15 @@ code = '
     item.currency_id = "ARS"
     item.unit_price = "10.00"
     
-    payer = new MercadoPago::Payer()
+    payer = MercadoPago::Payer.new()
     payer.email = "usuario@mail.com"
     
-    preference.items = [$item]
+    preference.items = [item]
     preference.payer = payer
     
     preference.save()  '
     
-@@samples["basic_integration"]["ruby"] = code
+@@snippets["basic_integration"]["ruby"] = code
 
 code = ' 
     MercadoPago.Preference preference = new MercadoPago.Preference();
@@ -63,25 +63,24 @@ code = '
     
     preference.save();  '
 
-@@samples["basic_integration"]["java"] = code
+@@snippets["basic_integration"]["java"] = code
 
 code = ' 
   exports.run = function (req, res) {
 
+      var preference = {}; \\ Preference
 
-      var preference = {};
-
-      var item = {};
+      var item = {}; \\ Item
       item["title"] = "Multicolor kite";
       item["quantity"] = 1;
       item["currency_id"] = "ARS";
       item["unit_price"] = "10.00";
 
-      var payer = {};
+      var payer = {}; \\ Payer
       payer["email"] = "usuario@mail.com";
 
-      preference["items"] = [$item];
-      preference["payer"] = $payer;
+      preference["items"] = [item];
+      preference["payer"] = payer;
 
       mercadopago.preference.save().then(function (data) {
 	 	    //... Do Something
@@ -89,6 +88,6 @@ code = '
 
    };  '
 
-@@samples["basic_integration"]["nodejs"] = code
+@@snippets["basic_integration"]["nodejs"] = code
  
 
