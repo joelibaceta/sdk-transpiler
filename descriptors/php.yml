@@ -1,14 +1,20 @@
-expression_patterns:
-  language-tags: 
-    pattern: !ruby/regexp /(?<open>\<\?php)(?<body>[\w\W]*)(?<close>\?\>)/m 
-    format: "<?php{{body}}?>"
-  variables: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<property>.*?)(?<equal>\s=\s|=)(?<value>.*?)(?<endline>\;)/m
-    params: !ruby ["$", nil, "->", nil, "=", nil, ";"]
-  object-instantiation: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<equal>\s=\s|=)(?<instantiation>new MercadoPago\\)(?<class>.*?)(?<method>\(\))(?<endline>\;)/m
-    params: !ruby ["$"]
-  method-call: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<method>\w+)(?<params>\(\))(?<endline>\;)/m  
-    params: !ruby ["", nil, ""]
-    
+
+object-instantiation:
+  pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<equal>\s=\s|=)(?<instantiation>new MercadoPago\\)(?<class>.*?)(?<method>\(\))(?<endline>\;)/m
+  format: "${{object}} = new MercadoPago\\{{class}}();\n"
+variables:
+  pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<property>.*?)(?<equal>\s=\s|=)(?<value>.*?)(?<endline>\;)/m
+  format: "${{object}}->{{property}} = {{value}};"
+  value:
+    array:
+      pattern: !ruby/regexp /(?<a>array\()(?<items>.+)(?<fa>\))/m
+      format: "array({{items}})"
+    variable:
+      pattern: !ruby/regexp /(?<variable_prefix>\$)(?<value>\w+)/m
+      format: "${{value}}"
+method-call:
+  pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<method>\w+)(?<params>\(\))(?<endline>\;)/m
+  format: "${{object}}->{{method}}{{params}};\n"
+language-tags:
+  pattern: !ruby/regexp /(?<open>\<\?php)(?<body>[\w\W]*)(?<close>\?\>)/m
+  format: "<?php \n {{body}} \n?>"

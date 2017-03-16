@@ -1,13 +1,19 @@
-expression_patterns:
-  language-tags: 
-    pattern: !ruby/regexp /(?<open>exports\.run\s\=\sfunction\s\(req\,\sres\)\s\{)(?<body>[\w\W]*)(?<close>\}\;)/m 
-    format: "exports.run = function (req, res) {\n {{body}} \n};"
-  variables: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<property>.*?)(?<equal>\s=\s|=)(?<value>.*?)(?<endline>\;)/m 
-    format: "{{object}}[\"{{property}}\"] = {{value}};"
-  object-instantiation: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<equal>\s=\s|=)(?<instantiation>new MercadoPago\\)(?<class>.*?)(?<method>\(\))(?<endline>\;)/m 
-    format: "var {{object}} = {};"
-  method-call: 
-    pattern: !ruby/regexp /(?<variable_prefix>\$)(?<object>\w+)(?<caller>\-\>)(?<method>\w+)(?<params>.*?\(\))(?<endline>\;)/m   
-    format: "mercadopago.{{object}}.{{method}}{{params}}.then(function (data) { \n\t \t//... Do Something \n\t });"
+language-tags:
+  pattern: !ruby/regexp /(?<open>exports\.run\s\=\sfunction\s\(req\,\sres\)\s\{)(?<body>.+)(?<close>\}\;)/m
+  format: "exports.run = function (req, res) {\n {{body}} \n};"
+object-instantiation:
+  pattern: !ruby/regexp /(?<var>var\s)(?<object>\w+)(?<equal>\s=\s|=)(?<json>\{\})(?<endline>\;)(?<comment>\s\W+)(?<class>.\w+)/m
+  format: "var {{object}} = {}; \\ {{class}}"
+variables:
+  pattern: !ruby/regexp /(?<object>\w+)(?<caller>\[\")(?<property>.*?)(?<close_caller>\"\])(?<equal>\s=\s|=)(?<value>.*?)(?<endline>\;)/m
+  format: "{{object}}[\"{{property}}\"] = {{value}};"
+  value:
+    variable:
+      pattern: !ruby/regexp /[a-zA-Z]+\(|\"\w.+\"|(?<value>[a-zA-Z].[^\)|^\]]+)/m
+      format: "{{value}}"
+    array:
+      pattern: !ruby/regexp /^(?<i>\[)(?<items>.+)(?<f>\]).*/m
+      format: "[{{items}}]"
+method-call: 
+  pattern: !ruby/regexp /(?<mp>mercadopago\.)(?<object>\w+)(?<caller>\.)(?<method>\w+)(?<params>.*?\(\))(?<body-method>.+\))(?<endline>\;)/m
+  format: "mercadopago.{{object}}.{{method}}{{params}}.then(function (data) { \n\t \t//... Do Something \n\t });"

@@ -1,13 +1,20 @@
-expression_patterns:
-  language-tags: 
-    pattern: !ruby/regexp /(?<body>[\w\W]*)/m 
-    format: "{{body}}"
-  variables: 
-    pattern: !ruby/regexp /(?<object>\w+)(?<caller>\.)(?<property>\w+)\s(?<equal>=|=)\s(?<value>[^\n\r]+)/m 
-    format: "{{object}}.{{property}} = {{value}}"
-  object-instantiation: 
-    pattern: !ruby/regexp /(?<variable_prefix>)(?<object>\w+)\s(?<equal>=|=)\s(?<instantiation>MercadoPago\:\:)(?<class>\w+)(?<method>.[new|\new\(\)]+)(?<endline>)/m 
-    format: "{{object}} = MercadoPago::{{class}}.new()"
-  method-call: 
-    pattern: !ruby/regexp /\n(?<variable_prefix>)(?<object>\w+)(?<caller>\.)(?<method>\w+)(\((?<params>.*?)\))(?<endline>)/m   
-    format: "{{object}}.{{method}}{{params}}"
+
+object-instantiation: 
+  pattern: !ruby/regexp /(?<object>\w+)(?<equal>\s=\s|=)(?<instantiation>MercadoPago\:\:)(?<class>\w+)(?<method>.[new|\new\(\)]+)/m 
+  format: "{{object}} = MercadoPago::{{class}}.new()"
+variables:
+  pattern: !ruby/regexp /(?<object>\w+)(?<caller>\.)(?<property>\w+)(?<equal>\s=\s|=)(?<value>[^\n\r]+)/m 
+  format: "{{object}}.{{property}} = {{value}}"
+  value:
+    array:
+      pattern: !ruby/regexp /(?<q1>\[)(?<items>.*)(?<q2>\])/m
+      format: "[{{items}}]"
+    variable:
+      pattern: !ruby/regexp /[a-zA-Z]+\(|\"\w.+\"|(?<value>[a-zA-Z].+[^\)|^\]])/m
+      format: "{{value}}"
+method-call: 
+  pattern: !ruby/regexp /(?<object>\w+)(?<caller>\.)(?<method>\w+)(?<params>\(\.*?\))/m   
+  format: "{{object}}.{{method}}{{params}}"
+language-tags:
+  pattern: !ruby/regexp /(?<body>.+)/m
+  format: "{{body}}"
